@@ -1,6 +1,6 @@
 ARCH = x86_64
-TARGET = kdivisix
-MODULES = kernel-main.o video-main.o font.o
+TARGET = compiled/boot/kdivisix
+MODULES = multiboot-header.o kernel-main.o video-main.o serial-main.o serial.o long-mode.o
 
 ifeq ($(USE_GCC),)
 LD = ld
@@ -11,6 +11,7 @@ endif
 all:
 	make -C ./kernel-module/
 	make -C ./video-module/
-	$(LD) -nostdlib -z max-page-size=0x1000 -Ttext=0x01000000 *.o -o $(TARGET)
+	make -C ./serial-module/
+	$(LD) --script=linker.ld -nostdlib -z max-page-size=0x1000 -Ttext=0x01000000 *.o -o $(TARGET)
 clean:
 	rm *.o ./kdivisix 2>/dev/null || true

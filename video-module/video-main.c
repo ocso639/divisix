@@ -1,23 +1,10 @@
-#include "psf.h"
+#include "../types.h"
+#define text_buffer 0xb8000
 
-extern void video_set_framebuffer(uint64_t *ptr, int width, int height) {
-    framebuffer = (unsigned int*)ptr;
-    framebuffer_width = width;
-    framebuffer_height = height;
+extern void puts(const char *str, char color_code) {
+    unsigned char *video_iterator = ((unsigned char*)text_buffer);
+    while (*str != '\0') {
+        *(video_iterator++) = *str++;
+        *(video_iterator++) = color_code;
+    }
 }
-
-extern void video_set_foreground_color(int color) {
-    foreground_color = color;
-}
-
-extern void video_set_background_color(int color) {
-    background_color = color;
-}
-
-
-extern void video_clear() {
-    for (int i = 0; i < (framebuffer_width * framebuffer_height); i++) {
-        framebuffer[i] = background_color;
-    } return;
-}
-

@@ -3,21 +3,20 @@
 #include "errors.h"
 #include "arguments.h"
 #include "string.h"
+#include "serial.h"
 #include "video.h"
 #define look_amount 255
+
 /*
  *  argument types:
  *  --fat-disable
  *  --silent-boot
  *  --default-shell         (path to shell)
  *  --verbose-message 
- *  --framebuffer           (address)   (REQUIRED)
- *  --framebuffer-width     (int)       (REQUIRED)
- *  --framebuffer-height    (int)       (REQUIRED)
  *  --end                               (REQUIRED)
  */
 
-void _start(const char* arg0, ...) {
+void _kentry(const char* arg0, ...) {
     //
     // argument detection
     //
@@ -26,9 +25,13 @@ void _start(const char* arg0, ...) {
                 verbose_message = FALSE;
 
     const char* default_shell;
-    uint64_t    *framebuffer_address;
-    int         framebuffer_width;
-    int         framebuffer_height;
+    //uint64_t    *framebuffer_address;
+    //int         framebuffer_width;
+    //int         framebuffer_height;
+
+    serial_start(); // start logging
+
+    //unsigned long *text = 0x2f592f412f4b2f4f;
 
     // we could be reading irrelevant data
     for (int i = 0; i < look_amount; i++) {
@@ -41,19 +44,12 @@ void _start(const char* arg0, ...) {
             default_shell = (const char*)get_argument(&arg0, i++);
         if (strcmp(arg0, "--verbose-message"))
             verbose_message = TRUE;
-        if (strcmp(arg0, "--framebuffer"))
-            framebuffer_address = (uint64_t*)get_argument(&arg0, i++);
-        if (strcmp(arg0, "--framebuffer-width"))
-            framebuffer_width = (int)get_argument(&arg0, i++);
-        if (strcmp(arg0, "--framebuffer-height"))
-            framebuffer_height = (int)get_argument(&arg0, i++);
         if (strcmp(arg0, "--end"))
             break;
-        if ((i == look_amount) & (strcmp(arg0, "--end") != 0) || (framebuffer_address))
-            // the argument list must be ended off by "--end", panic if it's not
-            // we must also have a valid framebuffer address
-            __unconditional_panic();
     }
-    video_set_framebuffer(framebuffer_address, framebuffer_width, framebuffer_height);
 
+
+    puts("DIVISIX KERNEL", 7);
+    //halt the system
+    while(1) {}
 }
