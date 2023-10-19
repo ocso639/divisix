@@ -1,3 +1,7 @@
+;
+; Header for GRUB's Multiboot 2 specification
+;
+
 section .multiboot_header
 header_start:
     dd 0xe85250d6

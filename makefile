@@ -12,6 +12,6 @@ all:
 	make -C ./kernel-module/
 	make -C ./video-module/
 	make -C ./serial-module/
-	$(LD) --script=linker.ld -nostdlib -z max-page-size=0x1000 -Ttext=0x01000000 *.o -o $(TARGET)
+	$(LD) --script=linker.ld -nostdlib -z max-page-size=0x1000 *.o -o $(TARGET)
 clean:
 	rm *.o ./kdivisix 2>/dev/null || true
