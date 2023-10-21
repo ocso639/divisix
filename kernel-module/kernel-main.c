@@ -16,9 +16,11 @@ void _kentry(const char* arg0, ...) {
     const char* default_shell;
 
     serial_start();
-
-    puts("Divisix Kernel version (00:01)\n", 0xF);
-    puts("LOADED", 0xF);
     //halt the system
+    kputs("Divisix Kernel x86-64 Revision 00:01\n", 0xF);
+    for (int i = 0; i < 24; i++) {
+        kputs("newlines test\n", 0xF);
+    }
+    
     while(1) {}
-}
+}   

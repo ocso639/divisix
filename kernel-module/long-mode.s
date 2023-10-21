@@ -1,10 +1,28 @@
+;
+; Initial code for initializing 64-bit mode AKA long mode
+;
+
 [bits 32]
 global start 
 extern _kentry
+extern system_call_handler
 
 start:
+;
+; Manipulate cursor shape
+;
+    mov dx, 0x3D4
+    mov al, 0xA
+    out dx, al
+
+    inc dx
+    mov al, 0b00000001 ; Shape
+    out dx, al
+;
+; Continue with long mode
+;
     mov eax, p3_table
-    or eax, 0b11 ;
+    or eax, 0b11
     mov dword [p4_table + 0], eax
 
     mov eax, p2_table
@@ -47,6 +65,8 @@ start:
     mov es, ax  
 
     jmp gdt64.code:long_mode_start
+
+
 section .bss
     
 align 4096
